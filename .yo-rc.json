@@ -1,0 +1,40 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "es.emilio",
+      "nativeLanguage": "es"
+    },
+    "jhipsterVersion": "6.8.0",
+    "applicationType": "monolith",
+    "baseName": "citmil",
+    "packageName": "es.emilio",
+    "packageFolder": "es/emilio",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "Y2RlZGNmZmZkYzBiMmQxMWE3ZjI5MGFmNDEzZGE3M2ZkODZmM2E1YTkwZmQwYmJiMTM2YjU0Y2M3NDExOTY5MzQ1MTZlMmU3MDJlZGNlNmE4NzljMDNhMzQyNjM1ZjM1ZTA5NzY1N2FiNWI2MDJjNzY3MWUyNGUyMzQ4NDAzZDE=",
+    "embeddableLaunchScript": false,
+    "creationTimestamp": 1589295597213,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": true,
+    "clientPackageManager": "npm",
+    "nativeLanguage": "es",
+    "languages": ["es", "en", "gl"],
+    "blueprints": [],
+    "skipClient": true
+  }
+}
