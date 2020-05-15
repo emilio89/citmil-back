@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <!--
+        Added the constraints for entity Profesional.
+    -->
+    <changeSet id="20200515123000-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="profesional_id"
+                                 baseTableName="profesional_type_service"
+                                 constraintName="fk_profesional_type_service_profesional_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="profesional"/>
+
+        <addForeignKeyConstraint baseColumnNames="type_service_id"
+                                 baseTableName="profesional_type_service"
+                                 constraintName="fk_profesional_type_service_type_service_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="type_service"/>
+        
+        <addForeignKeyConstraint baseColumnNames="calendar_year_profesional_id"
+                                 baseTableName="profesional"
+                                 constraintName="fk_profesional_calendar_year_profesional_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="calendar_year_profesional"/>
+
+        <addForeignKeyConstraint baseColumnNames="company_id"
+                                 baseTableName="profesional"
+                                 constraintName="fk_profesional_company_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="company"/>
+
+        <addForeignKeyConstraint baseColumnNames="time_band_available_profesional_day_id"
+                                 baseTableName="profesional"
+                                 constraintName="fk_profesional_time_band_available_profesional_day_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="time_band_available_profesional_day"/>
+
+    </changeSet>
+</databaseChangeLog>

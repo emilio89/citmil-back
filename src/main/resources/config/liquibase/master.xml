@@ -14,6 +14,25 @@
     <property name="uuidType" value="varchar(36)" dbms="h2, mysql, mariadb"/>
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123000_added_entity_Profesional.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123100_added_entity_Company.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123200_added_entity_MenuOptionsAvailable.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123300_added_entity_DynamicContent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123400_added_entity_TypeService.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123500_added_entity_TimeBand.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123600_added_entity_Appointment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123700_added_entity_CalendarYearProfesional.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123800_added_entity_TimeBandAvailableProfesionalDay.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123900_added_entity_PublicHoliday.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20200515123000_added_entity_constraints_Profesional.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123200_added_entity_constraints_MenuOptionsAvailable.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123300_added_entity_constraints_DynamicContent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123400_added_entity_constraints_TypeService.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123500_added_entity_constraints_TimeBand.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123600_added_entity_constraints_Appointment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123700_added_entity_constraints_CalendarYearProfesional.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123800_added_entity_constraints_TimeBandAvailableProfesionalDay.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200515123900_added_entity_constraints_PublicHoliday.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
