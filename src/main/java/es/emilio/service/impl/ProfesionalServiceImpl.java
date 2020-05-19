@@ -1,19 +1,25 @@
 package es.emilio.service.impl;
 
-import es.emilio.service.ProfesionalService;
-import es.emilio.domain.Profesional;
-import es.emilio.repository.ProfesionalRepository;
-import es.emilio.service.dto.ProfesionalDTO;
-import es.emilio.service.mapper.ProfesionalMapper;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import es.emilio.domain.Authority;
+import es.emilio.domain.Profesional;
+import es.emilio.domain.User;
+import es.emilio.repository.AuthorityRepository;
+import es.emilio.repository.ProfesionalRepository;
+import es.emilio.service.ProfesionalService;
+import es.emilio.service.dto.ProfesionalDTO;
+import es.emilio.service.mapper.ProfesionalMapper;
 
 /**
  * Service Implementation for managing {@link Profesional}.
@@ -46,7 +52,24 @@ public class ProfesionalServiceImpl implements ProfesionalService {
         profesional = profesionalRepository.save(profesional);
         return profesionalMapper.toDto(profesional);
     }
-
+    
+    @Autowired
+    private AuthorityRepository authorityRepository;
+    
+    public User profesionalToUser (ProfesionalDTO profesionalDTO) {
+    	User user = new User ();
+    	Set<Authority> authorities = new HashSet<Authority>();
+    	authorities.add(authorityRepository.findByName("ROLE_PROFESIONAL"));
+	    user.setAuthorities(authorities);	
+    	user.setActivated(true);
+    	user.setActivationKey(null);
+    	//enviar password por email? 
+    	user.setEmail(profesionalDTO.getEmail());
+    	user.setFirstName(profesionalDTO.getFirstName());
+    	user.setLastName(profesionalDTO.getLastName());
+    	return user;
+    	
+    }
     /**
      * Get all the profesionals.
      *
