@@ -1,5 +1,7 @@
 package es.emilio.web.rest;
 
+import es.emilio.config.Constants;
+import es.emilio.security.jwt.TokenProvider;
 import es.emilio.service.TypeServiceService;
 import es.emilio.web.rest.errors.BadRequestAlertException;
 import es.emilio.service.dto.TypeServiceDTO;
@@ -9,6 +11,7 @@ import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,6 +38,8 @@ public class TypeServiceResource {
     private final Logger log = LoggerFactory.getLogger(TypeServiceResource.class);
 
     private static final String ENTITY_NAME = "typeService";
+    @Autowired
+    TokenProvider tokenProvider;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -52,11 +58,15 @@ public class TypeServiceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/type-services")
-    public ResponseEntity<TypeServiceDTO> createTypeService(@Valid @RequestBody TypeServiceDTO typeServiceDTO) throws URISyntaxException {
+    public ResponseEntity<TypeServiceDTO> createTypeService(@Valid @RequestBody TypeServiceDTO typeServiceDTO, HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to save TypeService : {}", typeServiceDTO);
         if (typeServiceDTO.getId() != null) {
             throw new BadRequestAlertException("A new typeService cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        String bearerToken = request.getHeader(Constants.AUTHORIZATION_HEADER);
+
+        Long companyId = tokenProvider.getIdCompany(bearerToken);
+        typeServiceDTO.setCompanyId(companyId);
         TypeServiceDTO result = typeServiceService.save(typeServiceDTO);
         return ResponseEntity.created(new URI("/api/type-services/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

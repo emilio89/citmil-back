@@ -87,6 +87,8 @@ public class UserResource {
 
     @Autowired
     TokenProvider tokenProvider;
+    
+    
     public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
         this.userService = userService;
         this.userRepository = userRepository;

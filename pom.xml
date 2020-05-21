@@ -450,6 +450,12 @@
                                 <version>${jaxb-runtime.version}</version>
                             </path>
                             <!-- jhipster-needle-maven-add-annotation-processor -->
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>1.18.12</version>
+							</path>
+                            
                         </annotationProcessorPaths>
                     </configuration>
                 </plugin>
