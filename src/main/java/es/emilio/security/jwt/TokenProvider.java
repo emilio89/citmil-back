@@ -2,12 +2,17 @@ package es.emilio.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,8 +21,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import es.emilio.repository.UserRepository;
 import io.github.jhipster.config.JHipsterProperties;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -28,6 +37,8 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
 
+    private static final String COMPANY_ID = "idCompany";
+
     private Key key;
 
     private long tokenValidityInMilliseconds;
@@ -36,6 +47,8 @@ public class TokenProvider {
 
     private final JHipsterProperties jHipsterProperties;
 
+    @Autowired
+    UserRepository userRepository;
     public TokenProvider(JHipsterProperties jHipsterProperties) {
         this.jHipsterProperties = jHipsterProperties;
     }
@@ -64,7 +77,11 @@ public class TokenProvider {
         String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
-
+        Long idCompany = 0L;
+        Optional<es.emilio.domain.User> userOp = userRepository.findOneWithAuthoritiesByLogin(authentication.getName()) ;
+        if (userOp.isPresent()) {
+        	idCompany = userOp.get().getUserExtra().getCompany().getId();
+        }
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -76,6 +93,7 @@ public class TokenProvider {
         return Jwts.builder()
             .setSubject(authentication.getName())
             .claim(AUTHORITIES_KEY, authorities)
+            .claim(COMPANY_ID, idCompany)
             .signWith(key, SignatureAlgorithm.HS512)
             .setExpiration(validity)
             .compact();
@@ -96,6 +114,20 @@ public class TokenProvider {
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
+    
+    public Long getIdCompany(String token) {
+    	String tokenWithOutBearer = token.substring(7);
+        Claims claims = Jwts.parser()
+            .setSigningKey(key)
+            .parseClaimsJws(tokenWithOutBearer)
+            .getBody();
+
+        Long idCompany = Long.valueOf((claims.get(COMPANY_ID).toString()));
+
+
+        return idCompany;
+    }
+
 
     public boolean validateToken(String authToken) {
         try {

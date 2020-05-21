@@ -1,22 +1,16 @@
 package es.emilio.web.rest;
 
-import es.emilio.config.Constants;
-import es.emilio.domain.User;
-import es.emilio.repository.UserRepository;
-import es.emilio.security.AuthoritiesConstants;
-import es.emilio.service.MailService;
-import es.emilio.service.UserService;
-import es.emilio.service.dto.UserDTO;
-import es.emilio.web.rest.errors.BadRequestAlertException;
-import es.emilio.web.rest.errors.EmailAlreadyUsedException;
-import es.emilio.web.rest.errors.LoginAlreadyUsedException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +18,31 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
+import es.emilio.config.Constants;
+import es.emilio.domain.User;
+import es.emilio.repository.UserRepository;
+import es.emilio.security.AuthoritiesConstants;
+import es.emilio.security.jwt.TokenProvider;
+import es.emilio.service.MailService;
+import es.emilio.service.UserService;
+import es.emilio.service.dto.UserDTO;
+import es.emilio.web.rest.errors.BadRequestAlertException;
+import es.emilio.web.rest.errors.EmailAlreadyUsedException;
+import es.emilio.web.rest.errors.LoginAlreadyUsedException;
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST controller for managing users.
@@ -58,12 +70,14 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final UserService userService;
 
@@ -71,6 +85,8 @@ public class UserResource {
 
     private final MailService mailService;
 
+    @Autowired
+    TokenProvider tokenProvider;
     public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
         this.userService = userService;
         this.userRepository = userRepository;
@@ -143,7 +159,9 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
     @GetMapping("/users")
-    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
+    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable, HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        Long companyId = tokenProvider.getIdCompany(bearerToken);
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

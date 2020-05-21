@@ -91,6 +91,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    @JsonIgnore
+    @OneToOne
+    private UserExtra userExtra;
+    
     public Long getId() {
         return id;
     }
@@ -196,7 +200,15 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
-    @Override
+    public UserExtra getUserExtra() {
+		return userExtra;
+	}
+
+	public void setUserExtra(UserExtra userExtra) {
+		this.userExtra = userExtra;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+        <property name="autoIncrement" value="true"/>
+
+    <!--
+        Added the entity PublicHoliday.
+    -->
+    <changeSet id="20200521074500-1" author="emilio">
+	<addColumn catalogName="cat"  
+			schemaName= "public"
+			tableName="jhi_user" >
+		<column name="user_extra_id" 
+				afterColumn="id" 
+				type="bigint" defaultValue="1">  
+			<constraints nullable="false" />  
+		</column>  
+	</addColumn>  
+    	
+        <addForeignKeyConstraint baseColumnNames="user_extra_id"
+                                 baseTableName="jhi_user"
+                                 constraintName="fk_user_id_user_extra"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_extra"/>
+    </changeSet>
+
+</databaseChangeLog>
