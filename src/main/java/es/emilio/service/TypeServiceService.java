@@ -24,9 +24,10 @@ public interface TypeServiceService {
      * Get all the typeServices.
      *
      * @param pageable the pagination information.
+     * @param companyId 
      * @return the list of entities.
      */
-    Page<TypeServiceDTO> findAll(Pageable pageable);
+    Page<TypeServiceDTO> findAll(Pageable pageable, Long companyId);
 
     /**
      * Get the "id" typeService.

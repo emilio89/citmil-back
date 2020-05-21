@@ -83,11 +83,15 @@ public class TypeServiceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/type-services")
-    public ResponseEntity<TypeServiceDTO> updateTypeService(@Valid @RequestBody TypeServiceDTO typeServiceDTO) throws URISyntaxException {
+    public ResponseEntity<TypeServiceDTO> updateTypeService(@Valid @RequestBody TypeServiceDTO typeServiceDTO, HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to update TypeService : {}", typeServiceDTO);
         if (typeServiceDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+        String bearerToken = request.getHeader(Constants.AUTHORIZATION_HEADER);
+
+        Long companyId = tokenProvider.getIdCompany(bearerToken);
+        typeServiceDTO.setCompanyId(companyId);
         TypeServiceDTO result = typeServiceService.save(typeServiceDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, typeServiceDTO.getId().toString()))
@@ -101,9 +105,13 @@ public class TypeServiceResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of typeServices in body.
      */
     @GetMapping("/type-services")
-    public ResponseEntity<List<TypeServiceDTO>> getAllTypeServices(Pageable pageable) {
+    public ResponseEntity<List<TypeServiceDTO>> getAllTypeServices(Pageable pageable, HttpServletRequest request) {
         log.debug("REST request to get a page of TypeServices");
-        Page<TypeServiceDTO> page = typeServiceService.findAll(pageable);
+        String bearerToken = request.getHeader(Constants.AUTHORIZATION_HEADER);
+
+        Long companyId = tokenProvider.getIdCompany(bearerToken);
+
+        Page<TypeServiceDTO> page = typeServiceService.findAll(pageable, companyId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
