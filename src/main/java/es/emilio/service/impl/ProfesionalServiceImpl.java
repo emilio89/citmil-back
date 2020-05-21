@@ -67,6 +67,7 @@ public class ProfesionalServiceImpl implements ProfesionalService {
     	user.setEmail(profesionalDTO.getEmail());
     	user.setFirstName(profesionalDTO.getFirstName());
     	user.setLastName(profesionalDTO.getLastName());
+    	user.setLangKey("es");
     	return user;
     	
     }
