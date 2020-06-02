@@ -12,6 +12,7 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "es";
     public static final String ANONYMOUS_USER = "anonymoususer";
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final Long ID_PROFESIONAL = 1L;
 
     private Constants() {
     }
