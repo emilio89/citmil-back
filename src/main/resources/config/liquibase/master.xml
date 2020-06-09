@@ -35,6 +35,7 @@
     <include file="config/liquibase/changelog/20200521074400_added_entity_constraints_TimeBandAvailableUserDay.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200521074500_added_entity_constraints_PublicHoliday.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200521074500_added_constraint_User_Extra_In_user.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200906_added_user_id_In_Calendar_year_user.xml" relativeToChangelogFile="false"/>
     
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

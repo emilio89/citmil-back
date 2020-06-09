@@ -1,16 +1,25 @@
 package es.emilio.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import javax.persistence.*;
-
 import java.io.Serializable;
-import java.util.Objects;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A CalendarYearUser.
@@ -35,10 +44,10 @@ public class CalendarYearUser implements Serializable {
     private Boolean isPublicHoliday;
 
     @Column(name = "start")
-    private Instant start;
+    private ZonedDateTime start;
 
     @Column(name = "end")
-    private Instant end;
+    private ZonedDateTime end;
 
     @OneToMany(mappedBy = "calendarYearUser")
     private Set<UserExtra> userExtras = new HashSet<>();
@@ -49,12 +58,17 @@ public class CalendarYearUser implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("calendarYearUsers")
+    private User user;
+
+    @ManyToOne
+    @JsonIgnoreProperties("calendarYearUsers")
     private TimeBandAvailableUserDay timeBandAvailableUserDay;
 
-    @ManyToMany(mappedBy = "calendarYearUsers")
+    @ManyToMany(mappedBy = "calendarYearUsers", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<TimeBand> timeBands = new HashSet<>();
 
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -103,29 +117,29 @@ public class CalendarYearUser implements Serializable {
         this.isPublicHoliday = isPublicHoliday;
     }
 
-    public Instant getStart() {
+    public ZonedDateTime getStart() {
         return start;
     }
 
-    public CalendarYearUser start(Instant start) {
+    public CalendarYearUser start(ZonedDateTime start) {
         this.start = start;
         return this;
     }
 
-    public void setStart(Instant start) {
+    public void setStart(ZonedDateTime start) {
         this.start = start;
     }
 
-    public Instant getEnd() {
+    public ZonedDateTime getEnd() {
         return end;
     }
 
-    public CalendarYearUser end(Instant end) {
+    public CalendarYearUser end(ZonedDateTime end) {
         this.end = end;
         return this;
     }
 
-    public void setEnd(Instant end) {
+    public void setEnd(ZonedDateTime end) {
         this.end = end;
     }
 
@@ -166,8 +180,17 @@ public class CalendarYearUser implements Serializable {
     public void setCompany(Company company) {
         this.company = company;
     }
+    
 
-    public TimeBandAvailableUserDay getTimeBandAvailableUserDay() {
+    public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public TimeBandAvailableUserDay getTimeBandAvailableUserDay() {
         return timeBandAvailableUserDay;
     }
 
