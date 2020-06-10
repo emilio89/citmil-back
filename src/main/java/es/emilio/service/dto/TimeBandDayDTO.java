@@ -2,7 +2,6 @@ package es.emilio.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -14,9 +13,9 @@ public class TimeBandDayDTO implements Serializable {
     
     private Instant day;
 
-    private Instant start;
+    private String start;
 
-    private Instant end;
+    private String end;
 
 
 }

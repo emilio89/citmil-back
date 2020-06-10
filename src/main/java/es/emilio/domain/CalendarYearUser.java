@@ -1,25 +1,16 @@
 package es.emilio.domain;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A CalendarYearUser.
@@ -44,10 +35,10 @@ public class CalendarYearUser implements Serializable {
     private Boolean isPublicHoliday;
 
     @Column(name = "start")
-    private ZonedDateTime start;
+    private Instant start;
 
     @Column(name = "end")
-    private ZonedDateTime end;
+    private Instant end;
 
     @OneToMany(mappedBy = "calendarYearUser")
     private Set<UserExtra> userExtras = new HashSet<>();
@@ -117,29 +108,29 @@ public class CalendarYearUser implements Serializable {
         this.isPublicHoliday = isPublicHoliday;
     }
 
-    public ZonedDateTime getStart() {
+    public Instant getStart() {
         return start;
     }
 
-    public CalendarYearUser start(ZonedDateTime start) {
+    public CalendarYearUser start(Instant start) {
         this.start = start;
         return this;
     }
 
-    public void setStart(ZonedDateTime start) {
+    public void setStart(Instant start) {
         this.start = start;
     }
 
-    public ZonedDateTime getEnd() {
+    public Instant getEnd() {
         return end;
     }
 
-    public CalendarYearUser end(ZonedDateTime end) {
+    public CalendarYearUser end(Instant end) {
         this.end = end;
         return this;
     }
 
-    public void setEnd(ZonedDateTime end) {
+    public void setEnd(Instant end) {
         this.end = end;
     }
 
