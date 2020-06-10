@@ -50,19 +50,7 @@ public class GenerateCalendarWeekServiceImpl implements GenerateCalendarWeekServ
 			Company company = companyRepository.getOne(companyId);
 			log.info("user : " + userDTO.getFirstName());
 
-			for (TimeBandDayDTO timeBandDayDTO : generateCalendarWeekDTO.getTimeBandsDay()) {
-				LocalDate day = timeBandDayDTO.getDay().atZone(ZoneId.systemDefault()).toLocalDate();
-				Optional<CalendarYearUser> calendarYearUserOp = calendarYearUserRepository
-						.findByDayAndYearAndUserAndCompany(day, day.getYear(), user, company);
-				if (calendarYearUserOp.isPresent()) {
-					log.info("Se procede a borrar la línea de calendario : " + calendarYearUserOp.toString());
-					log.info("Se procede a borrar las time bands asociadas a la linea del calendario : "
-							+ calendarYearUserOp.get().getId());
-
-					calendarYearUserRepository.delete(calendarYearUserOp.get());
-				}
-
-			}
+			deleteExistsCalendarYears(generateCalendarWeekDTO, user, company);
 			for (TimeBandDayDTO timeBandDayDTO : generateCalendarWeekDTO.getTimeBandsDay()) {
 				LocalDate day = timeBandDayDTO.getDay().atZone(ZoneId.systemDefault()).toLocalDate();
 				Set<TimeBand> timeBands = new HashSet<TimeBand>();
@@ -72,31 +60,26 @@ public class GenerateCalendarWeekServiceImpl implements GenerateCalendarWeekServ
 				timeBand.setCompany(company);
 				Optional<CalendarYearUser> calendarYearUserOp = calendarYearUserRepository
 						.findByDayAndYearAndUserAndCompany(day, day.getYear(), user, company);
+				LocalTime hourStart = getLocalTimeHourFromString(timeBandDayDTO.getStart());
+				LocalTime hourEnd =  getLocalTimeHourFromString(timeBandDayDTO.getEnd());
+				LocalDateTime start = getLocalDateTimeWithLocalDateAndLocalTime(day, hourStart);
+				LocalDateTime end = getLocalDateTimeWithLocalDateAndLocalTime(day, hourEnd);
+				timeBand.setEnd(getInstantWithLocalDateTime(end));
+				timeBand.setStart(getInstantWithLocalDateTime(start));
+
+				// Update porque existe (agregar el time band)
 				if (calendarYearUserOp.isPresent()) {
-					LocalTime hourStart = getLocalTimeHourFromString(timeBandDayDTO.getStart());
-					LocalTime hourEnd =  getLocalTimeHourFromString(timeBandDayDTO.getEnd());
-					LocalDateTime start = getLocalDateTimeWithLocalDateAndLocalTime(day, hourStart);
-					LocalDateTime end = getLocalDateTimeWithLocalDateAndLocalTime(day, hourEnd);
-					timeBand.setEnd(getInstantWithLocalDateTime(end));
-					timeBand.setStart(getInstantWithLocalDateTime(start));
 					calendarYearUsers.add(calendarYearUserOp.get());
 					timeBand.setCalendarYearUsers(calendarYearUsers);
 					timeBands.add(timeBand);
 					calendarYearUserOp.get().getTimeBands().add(timeBand);
 					calendarYearUserRepository.save(calendarYearUserOp.get());
-
 				} else {
+					// Crear uno nuevo
 					CalendarYearUser calendarYearUser = new CalendarYearUser();
 					calendarYearUser.setDay(day);
 					calendarYearUser.setStart(day.atStartOfDay().atZone((ZoneId.systemDefault())).toInstant());
 					calendarYearUser.setEnd(day.atTime(LocalTime.MAX).atZone((ZoneId.systemDefault())).toInstant());
-					LocalTime hourStart = getLocalTimeHourFromString(timeBandDayDTO.getStart());
-					LocalTime hourEnd = getLocalTimeHourFromString(timeBandDayDTO.getEnd());
-					LocalDateTime start = getLocalDateTimeWithLocalDateAndLocalTime(day, hourStart);
-					LocalDateTime end = getLocalDateTimeWithLocalDateAndLocalTime(day, hourEnd);
-
-					timeBand.setEnd(getInstantWithLocalDateTime(end));
-					timeBand.setStart(getInstantWithLocalDateTime(start));
 
 					calendarYearUser.setIsPublicHoliday(Boolean.FALSE);
 					calendarYearUser.setYear(day.getYear());
@@ -110,6 +93,23 @@ public class GenerateCalendarWeekServiceImpl implements GenerateCalendarWeekServ
 
 				}
 			}
+		}
+	}
+
+	private void deleteExistsCalendarYears(GenerateCalendarWeekDTO generateCalendarWeekDTO, User user,
+			Company company) {
+		for (TimeBandDayDTO timeBandDayDTO : generateCalendarWeekDTO.getTimeBandsDay()) {
+			LocalDate day = timeBandDayDTO.getDay().atZone(ZoneId.systemDefault()).toLocalDate();
+			Optional<CalendarYearUser> calendarYearUserOp = calendarYearUserRepository
+					.findByDayAndYearAndUserAndCompany(day, day.getYear(), user, company);
+			if (calendarYearUserOp.isPresent()) {
+				log.info("Se procede a borrar la línea de calendario : " + calendarYearUserOp.toString());
+				log.info("Se procede a borrar las time bands asociadas a la linea del calendario : "
+						+ calendarYearUserOp.get().getId());
+
+				calendarYearUserRepository.delete(calendarYearUserOp.get());
+			}
+
 		}
 	}
 
