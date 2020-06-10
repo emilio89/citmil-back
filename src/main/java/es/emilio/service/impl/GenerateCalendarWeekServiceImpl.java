@@ -73,9 +73,15 @@ public class GenerateCalendarWeekServiceImpl implements GenerateCalendarWeekServ
 				Optional<CalendarYearUser> calendarYearUserOp = calendarYearUserRepository
 						.findByDayAndYearAndUserAndCompany(day, day.getYear(), user, company);
 				if (calendarYearUserOp.isPresent()) {
-					//MODIFICAR AQUI TAMÉN AS FECHAS
-					//timeBand.setEnd(timeBandDayDTO.getEnd().atZone(ZoneId.systemDefault()).toInstant());
-				//	timeBand.setStart(timeBandDayDTO.getStart().atZone(ZoneId.systemDefault()).toInstant());
+					LocalTime hourStart = getLocalTimeHourFromString(timeBandDayDTO.getStart());
+					LocalTime hourEnd =  getLocalTimeHourFromString(timeBandDayDTO.getEnd());
+					LocalDateTime start = getLocalDateTimeWithLocalDateAndLocalTime(day, hourStart);
+					LocalDateTime end = getLocalDateTimeWithLocalDateAndLocalTime(day, hourEnd);
+					timeBand.setEnd(getInstantWithLocalDateTime(end));
+					timeBand.setStart(getInstantWithLocalDateTime(start));
+					calendarYearUsers.add(calendarYearUserOp.get());
+					timeBand.setCalendarYearUsers(calendarYearUsers);
+					timeBands.add(timeBand);
 					calendarYearUserOp.get().getTimeBands().add(timeBand);
 					calendarYearUserRepository.save(calendarYearUserOp.get());
 
@@ -84,16 +90,13 @@ public class GenerateCalendarWeekServiceImpl implements GenerateCalendarWeekServ
 					calendarYearUser.setDay(day);
 					calendarYearUser.setStart(day.atStartOfDay().atZone((ZoneId.systemDefault())).toInstant());
 					calendarYearUser.setEnd(day.atTime(LocalTime.MAX).atZone((ZoneId.systemDefault())).toInstant());
-					//LocalTime hourStart = LocalTime.from(timeBandDayDTO.getStart());
-					LocalTime hourStart = (timeBandDayDTO.getStart() != null) ? LocalTime.parse(timeBandDayDTO.getStart())
-		                    : LocalTime.parse("00:00");
-					LocalTime hourEnd = (timeBandDayDTO.getEnd() != null) ? LocalTime.parse(timeBandDayDTO.getEnd())
-		                    : LocalTime.parse("00:00");
-					LocalDateTime start = day.atTime(hourStart.getHour(), hourStart.getMinute());
-					LocalDateTime end = day.atTime(hourEnd.getHour(), hourEnd.getMinute());
+					LocalTime hourStart = getLocalTimeHourFromString(timeBandDayDTO.getStart());
+					LocalTime hourEnd = getLocalTimeHourFromString(timeBandDayDTO.getEnd());
+					LocalDateTime start = getLocalDateTimeWithLocalDateAndLocalTime(day, hourStart);
+					LocalDateTime end = getLocalDateTimeWithLocalDateAndLocalTime(day, hourEnd);
 
-					timeBand.setEnd(end.atZone(ZoneId.systemDefault()).toInstant());
-					timeBand.setStart(start.atZone(ZoneId.systemDefault()).toInstant());
+					timeBand.setEnd(getInstantWithLocalDateTime(end));
+					timeBand.setStart(getInstantWithLocalDateTime(start));
 
 					calendarYearUser.setIsPublicHoliday(Boolean.FALSE);
 					calendarYearUser.setYear(day.getYear());
@@ -108,13 +111,19 @@ public class GenerateCalendarWeekServiceImpl implements GenerateCalendarWeekServ
 				}
 			}
 		}
-		// genero los siguientes 7 días empezando por el que me llega en week
+	}
 
-		// ALGORITMO: por cada USUARIO!
-		// Recuperar el inicio de la semana y a partir de ese día, mirar cuantos
-		// timeBandsDays tenemos
-		// y por cada timeBandsDays mirar que día es y meter en CalendarYearUser el día
-		// y las timeBands en TimeBandAvailableUserDay
+	private Instant getInstantWithLocalDateTime(LocalDateTime end) {
+		return end.atZone(ZoneId.systemDefault()).toInstant();
+	}
+
+	private LocalDateTime getLocalDateTimeWithLocalDateAndLocalTime(LocalDate day, LocalTime hourStart) {
+		return day.atTime(hourStart.getHour(), hourStart.getMinute());
+	}
+
+	private LocalTime getLocalTimeHourFromString(String hour) {
+		return (hour != null) ? LocalTime.parse(hour)
+		        : LocalTime.parse("00:00");
 	}
 
 }
