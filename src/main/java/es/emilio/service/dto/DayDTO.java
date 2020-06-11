@@ -7,7 +7,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * A DTO for the week days.
+ * A DTO for a day.
  */
 @Data
 public class DayDTO implements Serializable {

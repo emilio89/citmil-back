@@ -10,7 +10,7 @@ import lombok.Data;
  * A DTO for the {@link es.emilio.domain.TimeBand} entity.
  */
 @Data
-public class GenerateCalendarWeekDTO implements Serializable {
+public class GenerateCalendarIndividualDaysDTO implements Serializable {
     
     private List<UserDTO> users;
 
