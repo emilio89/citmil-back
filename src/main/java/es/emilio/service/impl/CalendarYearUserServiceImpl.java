@@ -4,6 +4,7 @@ import es.emilio.service.CalendarYearUserService;
 import es.emilio.domain.CalendarYearUser;
 import es.emilio.repository.CalendarYearUserRepository;
 import es.emilio.service.dto.CalendarYearUserDTO;
+import es.emilio.service.dto.EventCalendarProfesionalDTO;
 import es.emilio.service.mapper.CalendarYearUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,4 +87,10 @@ public class CalendarYearUserServiceImpl implements CalendarYearUserService {
         log.debug("Request to delete CalendarYearUser : {}", id);
         calendarYearUserRepository.deleteById(id);
     }
+
+	@Override
+	public List<EventCalendarProfesionalDTO> getAllEventCalendarProfesional(Long companyId) {
+		// TODO Auto-generated method stub
+		return calendarYearUserRepository.findEventCalendarProfesional(companyId);
+	}
 }

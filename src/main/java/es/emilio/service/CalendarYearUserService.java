@@ -1,6 +1,7 @@
 package es.emilio.service;
 
 import es.emilio.service.dto.CalendarYearUserDTO;
+import es.emilio.service.dto.EventCalendarProfesionalDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +40,6 @@ public interface CalendarYearUserService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+	List<EventCalendarProfesionalDTO> getAllEventCalendarProfesional(Long companyId);
 }
