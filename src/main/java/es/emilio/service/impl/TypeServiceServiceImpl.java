@@ -55,9 +55,9 @@ public class TypeServiceServiceImpl implements TypeServiceService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<TypeServiceDTO> findAll(Pageable pageable) {
+    public Page<TypeServiceDTO> findAll(Pageable pageable, Long companyId) {
         log.debug("Request to get all TypeServices");
-        return typeServiceRepository.findAll(pageable)
+        return typeServiceRepository.findAllActivesByCompanyId(pageable, companyId)
             .map(typeServiceMapper::toDto);
     }
 

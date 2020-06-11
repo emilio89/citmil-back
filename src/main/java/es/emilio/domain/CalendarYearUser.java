@@ -49,12 +49,17 @@ public class CalendarYearUser implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("calendarYearUsers")
+    private User user;
+
+    @ManyToOne
+    @JsonIgnoreProperties("calendarYearUsers")
     private TimeBandAvailableUserDay timeBandAvailableUserDay;
 
-    @ManyToMany(mappedBy = "calendarYearUsers")
+    @ManyToMany(mappedBy = "calendarYearUsers", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<TimeBand> timeBands = new HashSet<>();
 
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -166,8 +171,17 @@ public class CalendarYearUser implements Serializable {
     public void setCompany(Company company) {
         this.company = company;
     }
+    
 
-    public TimeBandAvailableUserDay getTimeBandAvailableUserDay() {
+    public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public TimeBandAvailableUserDay getTimeBandAvailableUserDay() {
         return timeBandAvailableUserDay;
     }
 

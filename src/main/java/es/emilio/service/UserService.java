@@ -258,6 +258,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Page<UserDTO> getAllProfesionalUsersCompany(Pageable pageable, Long companyId) {
+    	Authority profesional = authorityRepository.getOne(AuthoritiesConstants.PROFESIONAL);
+        return userRepository.findAllByAuthoritiesAndUserExtraCompanyId(pageable, profesional, companyId).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneWithAuthoritiesByLogin(login);
     }
