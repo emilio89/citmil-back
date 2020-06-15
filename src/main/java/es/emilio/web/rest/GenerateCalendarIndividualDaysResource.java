@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.emilio.security.jwt.TokenProvider;
-import es.emilio.service.GenerateCalendarIndividualDaysService;
+import es.emilio.service.GenerateCalendarService;
 import es.emilio.service.dto.GenerateCalendarIndividualDaysDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 
@@ -33,7 +33,7 @@ public class GenerateCalendarIndividualDaysResource {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
 	@Autowired
-	GenerateCalendarIndividualDaysService generateCalendarIndividualDays;
+	GenerateCalendarService generateCalendarIndividualDays;
 	
     @Autowired
     TokenProvider tokenProvider;
@@ -51,8 +51,8 @@ public class GenerateCalendarIndividualDaysResource {
         Long companyId = tokenProvider.getIdCompany(bearerToken);
 		log.debug("REST request to generate calendar IndividualDays  : {} List users size "
 				+ generateCalendarIndividualDaysDTO.getUsers().size() + "  " 
-				+ " time bands days size " + generateCalendarIndividualDaysDTO.getTimeBandsDay().size());
-		generateCalendarIndividualDays.generate(generateCalendarIndividualDaysDTO, companyId);
+				+ " time bands days size " + generateCalendarIndividualDaysDTO.getDays().size());
+		generateCalendarIndividualDays.generateIndividualDays(generateCalendarIndividualDaysDTO, companyId);
 		return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "generado correctamente", generateCalendarIndividualDaysDTO.toString())).build();	
 	}
 
